@@ -2,6 +2,11 @@ const addBtns = document.querySelectorAll('.add-btn:not(.solid)');
 const saveItemBtns = document.querySelectorAll('.solid');
 const addItemContainers = document.querySelectorAll('.add-container');
 const addItems = document.querySelectorAll('.add-item');
+const modalContainer = document.querySelector('.modal-container');
+const modalClose = document.querySelector('.modal-close');
+const modalTextArea = document.querySelector('.modal-text');
+const modalSave = document.querySelector('.modal-save');
+const modalDelete = document.querySelector('.modal-delete');
 
 // Item Lists
 const listColumns = document.querySelectorAll('.drag-item-list');
@@ -24,6 +29,10 @@ let listArrays = [];
 let draggedItem;
 let dragging = false;
 let currentColumn;
+
+// Item Selected
+let itemSelected;
+let itemSelectedColumn;
 
 // Get Arrays from localStorage if available, set default values if not
 function getSavedColumns() {
@@ -60,21 +69,39 @@ function filterArray(array) {
 
 // Create DOM Elements for each list item
 function createItemEl(columnEl, column, item, index) {
+  // Bar Item
+  const barEl = document.createElement('div');
+  barEl.classList.add('bar-item');
+  barEl.classList.add('aquamarine');
+
+  // Paragraph Item
+  const pEl = document.createElement('p');
+  pEl.classList.add('par-item');
+  pEl.textContent = item;
+
   // List Item
   const listEl = document.createElement('li');
   listEl.classList.add('drag-item');
-  listEl.textContent = item;
+  // listEl.textContent = item;
   listEl.draggable = true;
   listEl.setAttribute('ondragstart', 'drag(event)');
   // listEl.contentEditable = true;
   listEl.addEventListener('click', function() {
-    alert( 'clicked' );
+    itemSelected = index;
+    itemSelectedColumn = column;
+    modalTextArea.textContent = listEl.textContent;
+    modalTextArea.value = listEl.textContent;
+    modalContainer.classList.add('show');
+    console.log( listEl );
+    console.log('index: ', index);
+    console.log('column: ', column);
   });
   listEl.id = index;
-  listEl.setAttribute('onfocusout', `updateItem(${index}, ${column})`);
+  // listEl.setAttribute('onfocusout', `updateItem(${index}, ${column})`);
   // Append
+  listEl.appendChild(barEl);
+  listEl.appendChild(pEl);
   columnEl.appendChild(listEl);
-
 }
 
 // Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
@@ -118,14 +145,18 @@ function updateDOM() {
 }
 
 // Update Item - Delete if necessary, or update Array value
-function updateItem(id, column) {
+function updateItem(id, column, text) {
+  console.log( 'listArrays: ', listArrays );
+  console.log( 'column: ', column );
+  console.log( 'listColumns: ', listColumns );
   const selectedArray = listArrays[column];
   const selectedColumnEl = listColumns[column].children;
   if(!dragging) {
-    if(!selectedColumnEl[id].textContent) {
+    if(!text) {
       delete selectedArray[id];
     } else {
-      selectedArray[id] = selectedColumnEl[id].textContent;
+      // selectedArray[id] = selectedColumnEl[id].textContent;
+      selectedArray[id] = text;
     }
     updateDOM();
   }
@@ -133,6 +164,8 @@ function updateItem(id, column) {
 
 // Add to Column List, Rest Textbox
 function addToColumn(column) {
+  console.log( 'addItems: ', addItems );
+  console.log( 'listArrays: ', listArrays );
   const itemText = addItems[column].textContent;
   const selectedArray = listArrays[column];
   selectedArray.push(itemText);
@@ -213,6 +246,43 @@ function drop(e) {
   dragging = false;
   rebuildArrays();
 }
+
+// Modal
+modalClose.addEventListener('click', function() {
+  modalContainer.classList.remove('show');
+  itemSelected = null;
+  itemSelectedColumn = null;
+  modalTextArea.textContent = '';
+});
+
+modalContainer.addEventListener('click', function(e) {
+  if(e.target.classList.contains('show')) {
+    modalContainer.classList.remove('show');
+    itemSelected = null;
+    itemSelectedColumn = null;
+    modalTextArea.textContent = '';
+  }
+});
+
+modalSave.addEventListener('click', function() {
+  if(modalTextArea.value) {
+    updateItem(itemSelected, itemSelectedColumn, modalTextArea.value);
+    itemSelected = null;
+    itemSelectedColumn = null;
+    modalTextArea.textContent = '';
+    modalTextArea.value = '';
+    modalContainer.classList.remove('show');
+  }
+});
+
+modalDelete.addEventListener('click', function() {
+  updateItem(itemSelected, itemSelectedColumn, '');
+  itemSelected = null;
+  itemSelectedColumn = null;
+  modalTextArea.textContent = '';
+  modalTextArea.value = '';
+  modalContainer.classList.remove('show');
+});
 
 // On Load
 updateDOM();
