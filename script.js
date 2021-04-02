@@ -1,5 +1,6 @@
-const addBtns = document.querySelectorAll('.add-btn:not(.solid)');
-const saveItemBtns = document.querySelectorAll('.solid');
+const addBtns = document.querySelectorAll('.add-new');
+const saveItemSolid = document.querySelectorAll('.add-solid');
+const saveItemCancel = document.querySelectorAll('.add-cancel');
 const addItemContainers = document.querySelectorAll('.add-container');
 const addItems = document.querySelectorAll('.add-item');
 const modalContainer = document.querySelector('.modal-container');
@@ -43,19 +44,20 @@ function getSavedColumns() {
     onHoldListArray = JSON.parse(localStorage.onHoldItems);
   } else {
     backlogListArray = [
-      ['aquamarine', 'Release the course'],
-      ['blueviolet', 'Sit back and relax']
+      ['aquamarine', 'Set User Flow'],
+      ['blueviolet', 'Broken UX']
     ];
     progressListArray = [
-      ['crimson', 'Work on projects'],
-      ['aqua', 'Listen to music']
+      ['crimson', 'Research'],
+      ['aqua', 'Create Mockup']
     ];
     completeListArray = [
-      ['lime', 'Being cool'],
-      ['antiquewhite', 'Getting stuff done']
+      ['lime', 'Review final design'],
+      ['antiquewhite', 'Change Colors'],
+      ['blueviolet', 'Gather Team']
     ];
     onHoldListArray = [
-      ['aquamarine', 'Being uncool']
+      ['aquamarine', 'Assign tasks']
     ];
   }
 }
@@ -169,28 +171,31 @@ function updateItem(id, column, text) {
 
 // Add to Column List, Reset Textbox
 function addToColumn(column) {
-  const itemText = addItems[column].textContent;
-  const selectedArray = listArrays[column];
-  selectedArray.push(['antiquewhite', itemText]);
-  addItems[column].textContent = '';
-  updateDOM();
+  if(addItems[column].textContent) {
+    hideInputBox(column);
+    const itemText = addItems[column].textContent;
+    const selectedArray = listArrays[column];
+    selectedArray.push(['antiquewhite', itemText]);
+    addItems[column].textContent = '';
+    updateDOM();
+  }
 }
 
 // Show Add Item Input Box
 function showInputBox(column) {
+  addItems[column].textContent = '';
   addBtns[column].style.display = 'none';
-  saveItemBtns[column].style.display = 'flex';
+  saveItemSolid[column].style.display = 'flex';
+  saveItemCancel[column].style.display = 'flex';
   addItemContainers[column].style.display = 'flex';
 }
 
 // Hide Item Input Box
 function hideInputBox(column) {
-  if(addItems[column].textContent) {
-    addBtns[column].style.display = 'block';
-    saveItemBtns[column].style.display = 'none';
-    addItemContainers[column].style.display = 'none';
-    addToColumn(column);
-  }
+  addBtns[column].style.display = 'block';
+  saveItemSolid[column].style.display = 'none';
+  saveItemCancel[column].style.display = 'none';
+  addItemContainers[column].style.display = 'none';
 }
 
 // Allows arrays to reflect Drag and Drop items
