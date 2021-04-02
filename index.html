@@ -24,6 +24,9 @@
                         ondragenter="dragEnter(0)"></ul>
                 </div>
                 <!-- Add Button Group -->
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
+                </div>
                 <div class="add-btn-group">
                     <div class="add-btn" onclick="showInputBox(0)">
                         <span>Add Item</span>
@@ -31,9 +34,6 @@
                     <div class="add-btn solid" onclick="hideInputBox(0)">
                         <span>Save Item</span>
                     </div>
-                </div>
-                <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
                 </div>
             </li>
             <!-- Progress Column -->
@@ -49,6 +49,9 @@
                         ondragenter="dragEnter(1)"></ul>
                 </div>
                 <!-- Add Button Group -->
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
+                </div>
                 <div class="add-btn-group">
                     <div class="add-btn" onclick="showInputBox(1)">
                         <span>Add Item</span>
@@ -56,9 +59,6 @@
                     <div class="add-btn solid" onclick="hideInputBox(1)">
                         <span>Save Item</span>
                     </div>
-                </div>
-                <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
                 </div>
             </li>
             <!-- Complete Column -->
@@ -74,6 +74,9 @@
                         ondragenter="dragEnter(2)"></ul>
                 </div>
                 <!-- Add Button Group -->
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
+                </div>
                 <div class="add-btn-group">
                     <div class="add-btn" onclick="showInputBox(2)">
                         <span>Add Item</span>
@@ -81,9 +84,6 @@
                     <div class="add-btn solid" onclick="hideInputBox(2)">
                         <span>Save Item</span>
                     </div>
-                </div>
-                <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
                 </div>
             </li>
             <!-- On Hold Column -->
@@ -99,6 +99,9 @@
                         ondragenter="dragEnter(3)"></ul>
                 </div>
                 <!-- Add Button Group -->
+                <div class="add-container">
+                    <div class="add-item" contenteditable="true"></div>
+                </div>
                 <div class="add-btn-group">
                     <div class="add-btn" onclick="showInputBox(3)">
                         <span>Add Item</span>
@@ -107,20 +110,43 @@
                         <span>Save Item</span>
                     </div>
                 </div>
-                <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
-                </div>
             </li>
         </ul>
     </div>
     <div class="modal-container">
         <div class="modal">
-            <h1>Modals are cool</h1>
-            <textarea class="modal-text" cols="30" rows="10"></textarea>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Commodi iure at a itaque atque accusamus.</p>
-            <button class="modal-close">Close Me</button>
-            <button class="modal-save">Save</button>
-            <button class="modal-delete">Delete</button>
+            <button class="modal-close">X</button>
+            <div class="modal-wrapper">
+                <div class="modal-label-options">
+                    <div class="modal-label-option">
+                        <input type="radio" name="input-label-option" id="antiquewhite" value="antiquewhite">
+                        <label for="antiquewhite" class="label-option antiquewhite"></label>
+                    </div>
+                    <div class="modal-label-option">
+                        <input type="radio" name="input-label-option" id="aquamarine" value="aquamarine">
+                        <label for="aquamarine" class="label-option aquamarine"></label>
+                    </div>
+                    <div class="modal-label-option">
+                        <input type="radio" name="input-label-option" id="blueviolet" value="blueviolet">
+                        <label for="blueviolet" class="label-option blueviolet"></label>
+                    </div>
+                    <div class="modal-label-option">
+                        <input type="radio" name="input-label-option" id="crimson" value="crimson">
+                        <label for="crimson" class="label-option crimson"></label>
+                    </div>
+                    <div class="modal-label-option">
+                        <input type="radio" name="input-label-option" id="aqua" value="aqua">
+                        <label for="aqua" class="label-option aqua"></label>
+                    </div>
+                    <div class="modal-label-option">
+                        <input type="radio" name="input-label-option" id="lime" value="lime">
+                        <label for="lime" class="label-option lime"></label>
+                    </div>
+                </div>
+                <textarea class="modal-text" cols="30" rows="10"></textarea>
+                <button class="modal-save">Save</button>
+                <button class="modal-delete">Delete</button>
+            </div>
         </div>
     </div>
     <!-- Script -->

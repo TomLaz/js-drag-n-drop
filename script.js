@@ -42,20 +42,29 @@ function getSavedColumns() {
     completeListArray = JSON.parse(localStorage.completeItems);
     onHoldListArray = JSON.parse(localStorage.onHoldItems);
   } else {
-    backlogListArray = ['Release the course', 'Sit back and relax'];
-    progressListArray = ['Work on projects', 'Listen to music'];
-    completeListArray = ['Being cool', 'Getting stuff done'];
-    onHoldListArray = ['Being uncool'];
+    backlogListArray = [
+      ['aquamarine', 'Release the course'],
+      ['blueviolet', 'Sit back and relax']
+    ];
+    progressListArray = [
+      ['crimson', 'Work on projects'],
+      ['aqua', 'Listen to music']
+    ];
+    completeListArray = [
+      ['lime', 'Being cool'],
+      ['antiquewhite', 'Getting stuff done']
+    ];
+    onHoldListArray = [
+      ['aquamarine', 'Being uncool']
+    ];
   }
 }
-
-// getSavedColumns();
-// updateSavedColumns();
 
 // Set localStorage Arrays
 function updateSavedColumns() {
   listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
   const arrayNames = ['backlog', 'progress', 'complete', 'onHold'];
+
   arrayNames.forEach( (arrayName, index) => {
     localStorage.setItem(`${arrayName}Items`, JSON.stringify(listArrays[index]));
   });
@@ -72,35 +81,34 @@ function createItemEl(columnEl, column, item, index) {
   // Bar Item
   const barEl = document.createElement('div');
   barEl.classList.add('bar-item');
-  barEl.classList.add('aquamarine');
+  barEl.classList.add(item[0]);
 
   // Paragraph Item
   const pEl = document.createElement('p');
   pEl.classList.add('par-item');
-  pEl.textContent = item;
+  pEl.textContent = item[1];
 
   // List Item
   const listEl = document.createElement('li');
   listEl.classList.add('drag-item');
-  // listEl.textContent = item;
   listEl.draggable = true;
-  listEl.setAttribute('ondragstart', 'drag(event)');
-  // listEl.contentEditable = true;
   listEl.addEventListener('click', function() {
     itemSelected = index;
     itemSelectedColumn = column;
     modalTextArea.textContent = listEl.textContent;
     modalTextArea.value = listEl.textContent;
+
+    // Set select option selected
+    document.getElementById(item[0]).checked = true;
+
+    // Show Modal
     modalContainer.classList.add('show');
-    console.log( listEl );
-    console.log('index: ', index);
-    console.log('column: ', column);
   });
   listEl.id = index;
-  // listEl.setAttribute('onfocusout', `updateItem(${index}, ${column})`);
   // Append
   listEl.appendChild(barEl);
   listEl.appendChild(pEl);
+  listEl.setAttribute('ondragstart', 'drag(event)');
   columnEl.appendChild(listEl);
 }
 
@@ -146,46 +154,43 @@ function updateDOM() {
 
 // Update Item - Delete if necessary, or update Array value
 function updateItem(id, column, text) {
-  console.log( 'listArrays: ', listArrays );
-  console.log( 'column: ', column );
-  console.log( 'listColumns: ', listColumns );
   const selectedArray = listArrays[column];
   const selectedColumnEl = listColumns[column].children;
   if(!dragging) {
     if(!text) {
       delete selectedArray[id];
     } else {
-      // selectedArray[id] = selectedColumnEl[id].textContent;
-      selectedArray[id] = text;
+      const labelSelected = document.querySelector('input[name="input-label-option"]:checked').value;
+      selectedArray[id] = [ labelSelected, text];
     }
     updateDOM();
   }
 }
 
-// Add to Column List, Rest Textbox
+// Add to Column List, Reset Textbox
 function addToColumn(column) {
-  console.log( 'addItems: ', addItems );
-  console.log( 'listArrays: ', listArrays );
   const itemText = addItems[column].textContent;
   const selectedArray = listArrays[column];
-  selectedArray.push(itemText);
+  selectedArray.push(['antiquewhite', itemText]);
   addItems[column].textContent = '';
   updateDOM();
 }
 
 // Show Add Item Input Box
 function showInputBox(column) {
-  addBtns[column].style.visibility = 'hidden';
+  addBtns[column].style.display = 'none';
   saveItemBtns[column].style.display = 'flex';
   addItemContainers[column].style.display = 'flex';
 }
 
 // Hide Item Input Box
 function hideInputBox(column) {
-  addBtns[column].style.visibility = 'visible';
-  saveItemBtns[column].style.display = 'none';
-  addItemContainers[column].style.display = 'none';
-  addToColumn(column);
+  if(addItems[column].textContent) {
+    addBtns[column].style.display = 'block';
+    saveItemBtns[column].style.display = 'none';
+    addItemContainers[column].style.display = 'none';
+    addToColumn(column);
+  }
 }
 
 // Allows arrays to reflect Drag and Drop items
@@ -195,17 +200,23 @@ function rebuildArrays() {
   completeListArray = [];
   onHoldListArray = [];
 
+  function getItemData(data, index) {
+    const itemClass = data.children[index].children[0].classList[1];
+    const itemText = data.children[index].children[1].textContent;
+    return [itemClass, itemText];
+  };
+
   for (let i=0; i<backlogList.children.length; i++) {
-    backlogListArray.push( backlogList.children[i].textContent );
+    backlogListArray.push(getItemData(backlogList, i));
   }
   for (let i=0; i<progressList.children.length; i++) {
-    progressListArray.push( progressList.children[i].textContent );
+    progressListArray.push(getItemData(progressList, i));
   }
   for (let i=0; i<completeList.children.length; i++) {
-    completeListArray.push( completeList.children[i].textContent );
+    completeListArray.push(getItemData(completeList, i));
   }
   for (let i=0; i<onHoldList.children.length; i++) {
-    onHoldListArray.push( onHoldList.children[i].textContent );
+    onHoldListArray.push(getItemData(onHoldList, i));
   }
   updateDOM();
 }
@@ -235,13 +246,16 @@ function dragEnter(column) {
 // Dropping Item in Column
 function drop(e) {
   e.preventDefault();
+
   // Remove Background Color/Padding
   listColumns.forEach((column) => {
     column.classList.remove('over');
-  })
+  });
+
   // Add Item to Column
   const parent = listColumns[currentColumn];
   parent.appendChild(draggedItem);
+
   // Dragging complete
   dragging = false;
   rebuildArrays();
